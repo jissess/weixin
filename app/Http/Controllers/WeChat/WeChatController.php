@@ -43,9 +43,21 @@ class WeChatController extends Controller
                     return '关注此公众号，美好生活即将起航！';
                     break;
                 case 'text':
-                    //返回用户发送的消息
-                    return $message['Content'];
+                    //获取到用户发送的文本内容
+                    $content = $message->Content;
+                    //发送到图灵机器人接口
+                    $url = "http://www.tuling123.com/openapi/api?key=d406ae6704f24d77a5b40f545df6f5fd&info=".$content;
+                    //获取图灵机器人返回的内容
+                    $content = file_get_contents($url);
+                    //对内容json解码
+                    $content = json_decode($content);
+                    //把内容发给用户
+                    return $content->text;
                     break;
+//                case 'text':
+//                    //返回用户发送的消息
+//                    return $message['Content'];
+//                    break;
                 case 'image':
                     return '收到图片消息';
                     break;

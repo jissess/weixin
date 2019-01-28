@@ -4,7 +4,7 @@ namespace App\Http\Controllers\WeChat;
 
 use EasyWeChat\Factory;
 use App\Http\Controllers\Controller;
-use EasyWeChat\Kernel\Messages\Text;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class WeChatController extends Controller
@@ -33,14 +33,14 @@ class WeChatController extends Controller
                 case 'event':
                     if ($message['Event'] == 'subscribe') {
                         Log::info('_openid_' . $message['FromUserName'] .'_' . '关注公众号');
-                        return '欢迎关注易录播公众号';
+                        return '欢迎关注吴业家的测试公众号';
                     }
 
                     if($message['Event'] == 'unsubscribe') {
                         Log::info('_openid_' . $message['FromUserName'] .'_' . '取消关注公众号');
                         return '已经取消关注';
                     }
-                    return '精品录播,开创新的学习';
+                    return '关注此公众号，美好生活即将起航！';
                     break;
                 case 'text':
                     //返回用户发送的消息
@@ -79,25 +79,6 @@ class WeChatController extends Controller
     {
         Log::info('bind __ ');
         return $this->app->oauth->scopes(['snsapi_userinfo'])->setRequest($request)->redirect();
-    }
-
-    public function setButton()
-    {
-        $buttons = [
-            [
-                "type" => "view",
-                "name" => "绑定授权",
-//                "url"  => "http://148.70.67.47/shouquan.html",
-                "url"  => "http://148.70.67.47/api/wx/bind-user",
-            ],
-            [
-                "type" => "view",
-                "name" => "我的微课",
-                "url" => "http://148.70.67.47/mylubo.html"
-            ],
-        ];
-        $setRes = $this->app->menu->create($buttons);
-        return response_success($setRes);
     }
 
     public function userSet(Request $request)
@@ -186,27 +167,6 @@ class WeChatController extends Controller
         $setRes = $this->app->menu->create($buttons);
 
         return response_success([]);
-    }
-
-    public function autoReply()
-    {
-        $this->app->server->push(function ($message) {
-            //对用户发送的消息根据不同类型进行区分处理
-            switch ($message->MsgType) {
-                //文本信息处理
-                case 'text':
-                    //获取到用户发送的文本内容
-                    $content = $message->Content;
-                    //把内容发给用户
-                    return new Text($content);
-                    break;
-
-                default:
-                    break;
-            }
-        });
-
-        return $this->app->server->serve();
     }
 
 }
